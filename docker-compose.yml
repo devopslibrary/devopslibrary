@@ -2,15 +2,21 @@
 # Add this top-level entry
 version: '3.3'
 services:
-  redis:
-    image: redislabs/rejson:latest
-    container_name: redis
-    expose:
-      - 6379
-    ports:
-      - "6379:6379"
+#  redis:
+#    image: redislabs/rejson:latest
+#    container_name: redis
+#    expose:
+#      - 6379
+#    ports:
+#      - "6379:6379"
   kondo-github-machine:
     build:
-      context: .
+      context: ./kondo-github-machine
       dockerfile: Dockerfile
-    entrypoint: "python run_repo_server.py"
+    user: "node"
+    working_dir: /home/node/app
+    volumes:
+      - ./kondo-github-machine:/home/node/app
+    expose:
+      - "8081"
+

@@ -1,9 +1,12 @@
 [submodule "kondo-github-machine"]
 	path = kondo-github-machine
 	url = git@github.com:devopslibrary/kondo-github-machine.git
+	branch = master
 [submodule "devopslibrary"]
 	path = devopslibrary
 	url = git@github.com:devopslibrary/devopslibrary.git
+	branch = master
 [submodule "kondo-backend"]
 	path = kondo-backend
 	url = git@github.com:devopslibrary/kondo-backend.git
+	branch = master

@@ -1,0 +1,16 @@
+# docker-compose.yml
+# Add this top-level entry
+version: '3.3'
+services:
+  redis:
+    image: redislabs/rejson:latest
+    container_name: redis
+    expose:
+      - 6379
+    ports:
+      - "6379:6379"
+  kondo-github-machine:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    entrypoint: "python run_repo_server.py"

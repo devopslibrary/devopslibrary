@@ -2,13 +2,38 @@
 # Add this top-level entry
 version: '3.3'
 services:
-#  redis:
-#    image: redislabs/rejson:latest
-#    container_name: redis
-#    expose:
-#      - 6379
-#    ports:
-#      - "6379:6379"
+  redis:
+    image: redis
+    expose:
+      - 6379
+    ports:
+      - "6379:6379"
+  db:
+    image: "postgres:12"
+    container_name: "postgres"
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: admin
+      POSTGRES_DB: kondo 
+    ports:
+      - "5432:5432"
+  dl-database-api:
+    build:
+      context: ./dl-database-api
+    ports:
+      - "8080:8080"
+    environment:
+      DB_HOST: db
+      DB_USERNAME: admin
+      DB_PASSWORD: password
+      DB_DATABASE: kondo
+      WAIT_HOSTS: postgres:5432
+    volumes:
+      - ./dl-database-api:/dl-database-api
+    links:
+      - db
+    depends_on:
+      - db
   kondo-github-machine:
     build:
       context: ./kondo-github-machine

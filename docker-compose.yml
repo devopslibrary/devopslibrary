@@ -22,6 +22,8 @@ services:
       context: ./dl-database-api
     ports:
       - "8080:8080"
+    expose:
+      - 8080
     environment:
       DB_HOST: db
       DB_USERNAME: admin
@@ -34,14 +36,21 @@ services:
       - db
     depends_on:
       - db
-  kondo-github-machine:
+  dl-github-jobs:
+    environment:
+      DATABASE_API: 'http://dl-database-api:8080/graphql'
+      REDIS_HOST: redis
+      PRIVATE_KEY: ${PRIVATE_KEY}
+      APP_ID: 30108
+      WAIT_HOSTS: dl-database-api:8080
     build:
-      context: ./kondo-github-machine
+      context: ./dl-github-jobs
       dockerfile: Dockerfile
     user: "node"
     working_dir: /home/node/app
     volumes:
-      - ./kondo-github-machine:/home/node/app
+      - ./dl-github-jobs:/home/node/app
     expose:
       - "8081"
-
+    depends_on:
+      - dl-database-api

@@ -1,12 +1,12 @@
-[submodule "dl-database-api"]
-	path = dl-database-api
-	url = git@github.com:devopslibrary/dl-database-api
-[submodule "dl-frontend"]
-	path = dl-frontend
-	url = git@github.com:devopslibrary/dl-frontend
 [submodule "dl-github-jobs"]
 	path = dl-github-jobs
 	url = git@github.com:devopslibrary/dl-github-jobs
 [submodule "dl-web-api"]
 	path = dl-web-api
 	url = git@github.com:devopslibrary/dl-web-api
+[submodule "dl-frontend"]
+	path = dl-frontend
+	url = git@github.com:devopslibrary/dl-frontend
+[submodule "dl-database-api"]
+	path = dl-database-api
+	url = git@github.com:devopslibrary/dl-database-api

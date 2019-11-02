@@ -21,9 +21,9 @@ services:
     build:
       context: ./dl-database-api
     ports:
-      - "8080:8080"
+      - "8081:8081"
     expose:
-      - 8080
+      - 8081
     environment:
       DB_HOST: db
       DB_USERNAME: admin
@@ -38,11 +38,11 @@ services:
       - db
   dl-github-jobs:
     environment:
-      DATABASE_API: 'http://dl-database-api:8080/graphql'
+      DATABASE_API: 'http://dl-database-api:8081/graphql'
       REDIS_HOST: redis
       PRIVATE_KEY: ${PRIVATE_KEY}
       APP_ID: 30108
-      WAIT_HOSTS: dl-database-api:8080
+      WAIT_HOSTS: dl-database-api:8081
     build:
       context: ./dl-github-jobs
       dockerfile: Dockerfile
@@ -50,7 +50,15 @@ services:
     working_dir: /home/node/app
     volumes:
       - ./dl-github-jobs:/home/node/app
-    expose:
-      - "8081"
     depends_on:
       - dl-database-api
+  dl-frontend:
+    environment:
+      WEB_API: 'http://dl-web-api:8082'
+    build:
+      context: ./dl-frontend
+      dockerfile: Dockerfile
+    expose:
+      - 8080
+    ports:
+      - "8080:8080"

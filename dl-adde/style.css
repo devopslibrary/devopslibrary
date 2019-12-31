@@ -1,0 +1,137 @@
+/* Reset everything to simplify styling */
+* {
+  margin: 0;
+  padding: 0;
+  font-family: normal 400 11px/16px Inter, Roboto, sans-serif;
+  /* font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial,
+    sans-serif, Apple Color Emoji, Segoe UI Emoji; */
+  line-height: 24px;
+  font-weight: 400;
+  color: #333;
+}
+
+/* Declare grid-area's for positioning */
+.main-head {
+  grid-area: header;
+}
+.content {
+  grid-area: content;
+}
+.main-nav {
+  grid-area: nav;
+}
+.side {
+  grid-area: sidebar;
+  /* max-width: 304px; */
+  /* justify-self: end; */
+}
+.ad {
+  grid-area: ad;
+}
+.main-footer {
+  grid-area: footer;
+}
+.content * {
+  line-height: 1.5em;
+}
+/* Overall Grid Layout for little screens */
+.grid {
+  display: grid;
+  /* grid-gap: 20px; */
+  grid-template-columns: 1fr 3fr minmax(304px, 1fr);
+  grid-template-areas:
+    "header    header   header"
+    "nav    content  sidebar"
+    "nav    content  sidebar"
+    "footer footer   footer";
+  /* height: 100vh; */
+  width: 100vw;
+  grid-template-rows: 50px 1fr 100px;
+}
+.side,
+article,
+footer,
+nav {
+  /* box-shadow: 1px 1px 1px 0px #e5e5e5; */
+  /* min-height: 2em; */
+  padding: 1em;
+  /* border: 1px black solid; */
+}
+#user {
+  justify-self: right;
+  align-self: center;
+  padding-right: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#org {
+  justify-self: left;
+  align-self: left;
+  padding-right: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  /* border-bottom: 1px solid #e1e4e8 !important; */
+  padding-bottom: 15px;
+}
+#orgName {
+  font-weight: 600;
+}
+#userName {
+  font-family: Poppins, Helvetica, Arial, sans-serif;
+  color: white;
+}
+#userLogo img {
+  border-radius: 50%;
+  height: 30px;
+  margin-right: 5px;
+}
+#orgLogo img {
+  height: 20;
+  margin-right: 5px;
+}
+nav ul {
+  list-style-type: none;
+  list-style: none;
+}
+header {
+  grid-column: 1/-1;
+  grid-row: 1;
+  box-shadow: 1px 1px 1px 0px #e5e5e5;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background-color: #24292e;
+}
+#logo {
+  color: #62b562;
+  font-weight: 700;
+  font-size: 1.5rem;
+  font-family: Poppins, Helvetica, Arial, sans-serif;
+}
+.white {
+  color: white;
+}
+header .dropdown-caret {
+  color: #fff;
+}
+.dropdown-caret {
+  display: inline-block;
+  vertical-align: middle;
+  border-top-style: solid;
+  border-top-width: 4px;
+  border-right: 4px solid transparent;
+  border-bottom: 0 solid transparent;
+  border-left: 4px solid transparent;
+  margin-left: 2px;
+}
+.main-nav {
+  max-width: 350px;
+}
+#apis {
+  margin-top: 15px;
+}
+.bold {
+  font-weight: 600;
+}

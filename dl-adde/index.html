@@ -1,0 +1,183 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>adde.to</title>
+  </head>
+  <body>
+    <div class="grid">
+      <header class="main-header">
+        <div id="logo">adde<span class="white">.to</span></div>
+        <div id="user">
+          <div id="userLogo">
+            <img src="loremUser.jpg" alt="userLogo" />
+          </div>
+          <span class="dropdown-caret"></span>
+        </div>
+      </header>
+
+      <article class="content">
+        <h1>Automated Declarative Data Engine</h1>
+        <h3>
+          <br />
+          Automate handoffs and communication between your teams via a shared
+          API, regardless of development experience. Your team's won't need to
+          learn how to build an API, all of that is taken care of via the DevOps Library ADDE
+        </h3>
+        <br />
+        <h3>What is declarative data?</h3>
+        <p>
+          Declarative data is what we call output from one team (usually in the
+          form of conversations within JIRA & Service Now tickets, excel sheets,
+          and occasionally a very outdated CMDB) that's consumed by one or more
+          other teams.
+        </p>
+        <br />
+        <h3>
+          Here are some typical examples:
+        </h3>
+        <br />
+        <ul>
+          <li>Linux SRE: What DNS Servers should I use in X datacenter?</li>
+          <li>NOC: What's the IPMI/iLO IP for X host?</li>
+          <li>
+            PM: What version of the application is deployed in X environment?
+          </li>
+          <li>Mgmt: When was X last patched?</li>
+          <li>
+            New Hire: What should I name my VM? Do we follow a naming standard?
+          </li>
+          <li>SRE: What application types do we have? Who owns them?</li>
+          <li>DBA: Are you sure you really put my DB on VLAN 450?</li>
+        </ul>
+        <br />
+        <h3>How does ADDE solve these questions?</h3>
+        <p>
+          ADDE can be summarized as an automatically generated API (GraphQL &
+          REST endpoints, as well as PowerShell cmdlets) based on JSON data
+          stored within a Github repository, with a bunch of helpers wrapped
+          around it to simplify things. Let's explain it a bit by going through
+          one of the the examples above, and what they'd look like by using ADDE.
+        </p>
+        <br />
+        <h4>Linux SRE: What DNS Servers should I use in X datacenter?</h4>
+        <p>
+          Answer: Lets say there's an infrastructure team that manages DNS
+          within each datacenter (as well as a lot of other config information).
+          They come from a Microsoft background and are pretty familiar with
+          PowerShell. Instead of responding via Slack every few weeks on what
+          DNS server someone should be using, they could instead run a very well
+          documented cmdlet.
+          <!-- prettier-ignore -->
+          <pre>
+            $sfo01 = @{}
+            $sfo01.Add("name", "sfo01")
+            $sfo01.Add("dns_servers", @{"primary": "10.0.0.50", "secondary": "10.0.0.51"})
+            $sfo01.Add("location", "San Francisco Colocation")
+            Configure-AddeServer -Org OrgName -AuthToken $authToken
+            Update-AddeObject -Name sfo01 -Type datacenters -Values $sfo01
+          </pre>
+          When ran, this tiny script will authenticate to the OrgName organization,
+          create a folder named datacenter (if it doesn't already exist) within
+          the LoremRepo repository, and generate a JSON schema file within the folder
+          to ensure that all additional "datacenters" have the same keys and value 
+          types.  Lastly, it will create a file named sfo01.json under the datacenters/
+          file, and automatically commit and merge the change into the repository.
+
+          Immediately, ADDE will then serve this information at:<br/><br/>
+          <ul>
+            <li>https://orgname.adde.to/rest/datacenters (for REST, with automatically generated Swagger Docs)</li>
+            <li>https://orgname.adde.to/graphql (for GraphQL, browseable via Graphiql UI)</li>
+            <li>https://orgname.adde.to/docs (For auto-generated documentation)</li>
+            <li>https://orgname.adde.to/powershell (For auto-generated PowerShell cmdlets)</li>
+          </ul>
+          <br/>
+          That means your Linux SRE can just curl the REST api to get a list of all datacenters, or hit a specific
+          datacenter to get even more information about that one, including the DNS servers.  Each endpoint also
+          has built-in CRUD functionality (Create, Remove, Update, Delete), so it's incredibly easy to keep the
+          information up-to-date. 
+
+          <br/>
+          Let's fast forward a little bit and see what things look like:
+          <br/>
+          * The Linux team has started using Terraform to bring up VMs on VMware.  For the
+          portgroup, they use the "http" datasource to automatically pull in the right one,
+          as the VMware and application dev teams have both agreed to store that information under
+          /apps with a jsonref reference a portgroup under /portgroups.
+          <br/>
+          * The VM itself is then configured via Chef, which then pulls in the DNS server information
+          from the /datacenters endpoint, dynamically based on which datacenter the VM is in.
+
+          <br/><br/>
+          You might be thinking, why don't all the teams all just speak via Terraform, or via Chef, or use a shared
+          MySQL database for this information, etc.
+
+          <br/><br/>You aren't wrong, and in a perfect world you are able to all align on a single technology.  That is
+          also very difficult in most cases.  Let's say you go with Terraform.  That's going to work great for all the
+          teams that Terraform has a provider for.  Let's say the VMware team has autopatching configured, a perfect
+          beyond most peoples wildest dreams set of ESXi clusters, all configured via a mountain of PowerCLI scripts called
+          automatically via some web of scheduled tasks.
+
+          <br/><br/>Would Terraform have made their life easier?  Pretty good chance.  They're currently working on setting up
+          Kubernetes on AWS as the next platform for all the teams.  What do you think the odds are of them rewriting all 
+          the scripts in Terraform?  Not very high in most cases.  Instead, they could simply add a one-liner or two at the end 
+          of the Add-AllThePortGroups.ps1 script, writing all of the information you actually need, consumable in whatever
+          way you'd like.
+
+          You'll run into the same problem with the other options as well.  Use MySQL to store everything?  The Windows
+          admins are going to be in for a fun experience.  Writing a beautiful GraphQL API in Golang?  We love graphql
+          too, but that doesn't mean the teams you work with are going to have any idea how to consume it.  Our goal is
+          to make it as easy as possible teams to speak the same language with each other, without mandating WHICH
+          language that is.
+
+          <br/><br/>
+          <h2>
+            What about vendor lock-in?
+          </h2>
+          <p>You wouldn't be good at your job if you didn't worry about vendor lock-in, especially for something that
+            your teams use to interface with each other.  That's a big reason behind utilizing Github to store your data
+            within YOUR git repositories.  All of the data is stored in the easiest possible format to consume, JSON.  In
+            the event that you decide ADDE isn't meant for you, you could just dump all of it into a key value store, a
+            database of your choosing, or just have the teams clone the repository and reference it manually.
+          </p><br/>
+          <h2>What are the advantages of using Git as the datastore?</h2>
+          <ul>
+            <li>No vendor lock-in (Can easily take your JSON and leave)</li>
+            <li>Audit Log (Git diff)</li>
+            <li>Backups (Git history)</li>
+            <li>OS Neutral (Incredibly easy to modify on any OS, Git is widely accepted standard)</li>
+            <li>Simplified Permissions (purely based on Git permissions)</li>
+          </ul>
+          <br/>
+          <h2>Disadvantages of using Git as the datastore?</h2>
+          <ul>
+            <li>
+              Performance & Size Limits - You are limited to 500,000 files per
+              repository, with a maximum size of 1GB total (meaning 500k total 
+              objects within a single API).  ADDE is intended for declarative
+              data, not as a high performance database.  The read performance is
+              augmented by caching, so queries via REST/Graphql/etc. are all
+              incredibly fast (all the JSON within the repository is ready to go
+              in memory).  With that said, ADDE has a default maximum limit of
+              10,000 requests per hour per API (over 2.77 per second).
+            </li>
+            <li>
+              Validation of Data - A large advantage to using a SQL database is
+              that all schema is declared in advance, ensuring any new data
+              adheres to that schema.  A github repository has no concept of
+              schema, as you can store just about anything in it.  ADDE solves
+              this issue by automatically generated a JSON Schema file anytime a
+              new object type is added.  It will then automatically enforce that
+              schema on all new updates, preventing bad data from being added to
+              the repository.  Need to modify the schema?  You can easily
+              directly update the .schema.json file and create a PR on the 
+              repository, or edit the schema within the ADDE management interface.
+            </li>
+          </ul>
+          <br/><br/><br/><br/><br/>
+        </p>
+      </article>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,65 @@
+ideas:
+  - developers.google.com/apis-explorer : Excellent API documention from Google
+  - https://github.com/slatedocs/slate : Looks perfect for the REST API Documentation
+  - graphiql : For Graphql endpoint
+  
+urls:
+  kar.adde.to/rest
+  angieslist.adde.to/graphql
+  adde.to/powershell
+  - /manage/$org/overview : Org Overview
+  - /manage/$org/addApi : Add new API to organization
+  - /manage/$org/apis/$api/schema : Edit API Schema
+  - /api/$org/$api : Actual API endpoiht
+  - /docs/$org/$api : Generated Documentation for API
+  - /graphql/$org/$api : GraphQL endpoint for API
+  - /swagger/$org/$api : Swagger endpoint for API
+  - /powershell/$org/$api : PowerShell endpoint for API
+workflows:
+  newUser:
+    - Visits devopslibrary.com/register (When clicking the ADDE button)
+    - devopslibrary.com/register:
+      - Has user sign up or login with Github account
+      - After log in, redirects to devopslibrary.com/getting-started
+    - devopslibrary.com/getting-started:
+      - Which org would you like to create your APIs under?:
+        - Options include all orgs user is a part of, as well as user account.
+      - When selecting org, it will redirect to Github for auth, then redirect to /manage/$org/overview
+    - devopslibrary.com/manage/$org/overview:
+      - 
+
+
+Register with Github Account -> Redirects to:
+devopslibrary.com/gettingstarted
+
+Which org would you like to use with Adde?
+adde
+
+Would you like to grant adde access to...?
+yes
+
+Redirect to:
+devopslibrary.com/manage/org/new-api
+----------------
+What would you like to name your API, and what's it for?
+(Tips and Advice all over)
+
+Enter name & description of API, save:
+
+Save creates new Github repository with readonly for everyone in
+the org, Admin for the person who made it, and for devopslibrary
+Redirects to:
+devopslibrary.com/manage/org/name/overview
+
+If no data, has page with:
+How would you like to define your Schema?
+POST JSON to devopslibrary.com/org/api/name/
+- Define Objects Types through UI
+- POST data 
+- Manually (by pushing JSON Schema to Git)
+
+Redirect to adde.devopslibrary.com/org/api/
+
+devopslibrary.com/org/api
+devopslibrary.com/org/explorer
+devopslibrary.com/org/manage
